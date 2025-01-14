@@ -5,13 +5,31 @@
     <div>{{ post.body }}</div>
   </div>
 </template>
+
 <script setup>
-const post = {
-  title:
-    "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-  body: "quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto",
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+import usePost from '../composables/usePost.js';
+import useUser from '../composables/useUser.js';
+
+const route = useRoute();
+const postId = ref(route.params.id); 
+
+const post = ref();
+const user = ref();
+
+const cargarDatos = async () => {
+
+  const { post: postE, llegirPost } = usePost(postId.value)
+  await llegirPost();
+  post.value = postE.value 
+
+  const { user: userE, llegirUser } = useUser(post.value.userId)
+  await llegirUser();
+  user.value = userE.value 
+
 };
-const user = {
-  name: "Leanne Graham",
-};
+
+cargarDatos();
 </script>
+
